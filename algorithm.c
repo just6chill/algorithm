@@ -4,55 +4,66 @@
 
 #include "algorithm.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int encrypt(char text[], char password[]) {
 
-    //the text string converted into its ascii values
-    unsigned long long int AsciiOfText[1000]={};
+    int AsciiText[1000];
+    int AsciiPwd[1000];
+    int i = 0;
+    int IndexNumText;
+    int IndexNumPwd;
+    int SecureSum = 0;
+    int Sum;
+    int index = 0;
+    int SumOfPwd = 0;
 
-    //the password string converted into its ascii values
-    long long int AsciiOfPWD[1000]={};
-
-    //the sum of all ascii values from the text string
-    long long int PWDAsciiSum;
-
-    //values for the loops
-    int check = 0;
-    int i=0;
-    int j;
-
-    //converting text string to ascii values
-    while(text[i]!='\0') {
-        AsciiOfText[i] = text[i];
+    while(text[i] != '\0') {
+        AsciiText[i] = text[i];
         i++;
     }
 
-    //converting password string to ascii values
-    while(password[i]!='\0') {
-        AsciiOfPWD[i] = password[i];
+    IndexNumText = i - 1;
+    i = 0;
+
+    while(password[i] != '\0') {
+        AsciiPwd[i] = password[i];
         i++;
     }
 
-    //counting together every ascii value to calculate sum
-    for(j=0;j<i-1;j++) {
-        PWDAsciiSum += AsciiOfPWD[i];
+    IndexNumPwd = i - 1;
+    i = 0;
 
-    }
+    for(int j=0; j < IndexNumText; j++) {
+        AsciiText[j] = AsciiText[j] + AsciiPwd[index];
+        index++;
 
-    //cutting away everything except the last 3 digits
-    PWDAsciiSum = PWDAsciiSum % 1000;
-
-    //multiplying the password sum to each of the ascii text values
-    for(j=0;j<i-1;j++) {
-        AsciiOfText[j] = AsciiOfText[j] * PWDAsciiSum;
-    }
-
-    //print out the entire encrypted string
-    printf("\nencrypted code:\n");
-    for(j=0;j<i-1;j++) {
-        if(AsciiOfText[j] != check) {
-            printf("%lld ", AsciiOfText[j]);
+        if(index == IndexNumPwd){
+            index = 0;
         }
+    }
+    index = 0;
+
+    for(int j=0; j < IndexNumText; j++) {
+        AsciiText[j] = (AsciiText[j] << AsciiPwd[index]) | (AsciiText[j] >> (32 - AsciiPwd[index]));
+        index++;
+
+        if(index == IndexNumPwd){
+            index = 0;
+        }
+    }
+
+    while(i < IndexNumPwd){
+        SecureSum += AsciiPwd[i];
+        i+=2;
+    }
+
+    for(int j=0; j < IndexNumText; j++) {
+        AsciiText[j] += SecureSum;
+    }
+
+    for(int j=0; j < IndexNumText; j++) {
+        printf("%d ", AsciiText[j]);
     }
 
     //exit the program
