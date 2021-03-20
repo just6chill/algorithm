@@ -4,7 +4,6 @@
 
 #include "algorithm.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 int encrypt(char text[], char password[]) {
 
@@ -14,9 +13,7 @@ int encrypt(char text[], char password[]) {
     int IndexNumText;
     int IndexNumPwd;
     int SecureSum = 0;
-    int Sum;
     int index = 0;
-    int SumOfPwd = 0;
 
     while(text[i] != '\0') {
         AsciiText[i] = text[i];
